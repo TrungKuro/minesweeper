@@ -201,6 +201,100 @@ export function gameReducer(
       };
     }
 
+    case GameActionType.AUTO_OPEN: {
+      const { cellId } = action.payload;
+
+      // Can't auto-open if game is over
+      if (
+        state.status === GameStatus.WON ||
+        state.status === GameStatus.LOST ||
+        state.status === GameStatus.IDLE
+      ) {
+        return state;
+      }
+
+      const cellIndex = state.board.findIndex((c) => c.id === cellId);
+      if (cellIndex === -1) return state;
+
+      const cell = state.board[cellIndex];
+
+      // Can only auto-open revealed numbered cells
+      if (!cell.isRevealed || cell.adjacentMines === 0 || cell.isMine) {
+        return state;
+      }
+
+      // Get neighbors
+      const [r, c] = cellId.split("-").map(Number);
+      const neighbors: string[] = [];
+      for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+          if (dr === 0 && dc === 0) continue;
+          const nr = r + dr;
+          const nc = c + dc;
+          if (nr >= 0 && nr < state.rows && nc >= 0 && nc < state.cols) {
+            neighbors.push(`${nr}-${nc}`);
+          }
+        }
+      }
+
+      // Count flagged neighbors
+      const flaggedCount = neighbors.filter((neighborId) => {
+        const neighbor = state.board.find((c) => c.id === neighborId);
+        return neighbor?.isFlagged;
+      }).length;
+
+      // Only auto-open if flags count equals adjacent mines
+      if (flaggedCount !== cell.adjacentMines) {
+        return state;
+      }
+
+      // Reveal all unflagged neighbors
+      let newBoard = state.board.map((c) => ({ ...c }));
+      let hitMine = false;
+      let mineId = "";
+
+      for (const neighborId of neighbors) {
+        const neighborIndex = newBoard.findIndex((c) => c.id === neighborId);
+        if (neighborIndex === -1) continue;
+
+        const neighbor = newBoard[neighborIndex];
+
+        // Skip if already revealed or flagged
+        if (neighbor.isRevealed || neighbor.isFlagged) continue;
+
+        // Reveal the neighbor
+        newBoard[neighborIndex] = { ...neighbor, isRevealed: true };
+
+        // Check if we hit a mine
+        if (neighbor.isMine) {
+          hitMine = true;
+          mineId = neighborId;
+        } else if (neighbor.adjacentMines === 0) {
+          // Use flood fill for cells with 0 adjacent mines
+          newBoard = revealFlood(newBoard, state.rows, state.cols, neighborId);
+        }
+      }
+
+      // If we hit a mine, game over
+      if (hitMine) {
+        return {
+          ...state,
+          board: newBoard,
+          status: GameStatus.LOST,
+          endTime: Date.now(),
+        };
+      }
+
+      // Check win condition
+      return checkWinCondition(
+        {
+          ...state,
+          board: newBoard,
+        },
+        onWin,
+      );
+    }
+
     case GameActionType.GAME_WON: {
       return {
         ...state,
@@ -332,6 +426,14 @@ export function useGameReducer(
     });
   }, []);
 
+  // Auto-open neighbors of a numbered cell
+  const autoOpen = useCallback((cellId: string) => {
+    dispatch({
+      type: GameActionType.AUTO_OPEN,
+      payload: { cellId },
+    });
+  }, []);
+
   // Reset game
   const resetGame = useCallback(() => {
     dispatch({
@@ -345,6 +447,7 @@ export function useGameReducer(
     startNewGame,
     revealCell,
     toggleFlag,
+    autoOpen,
     resetGame,
   };
 }

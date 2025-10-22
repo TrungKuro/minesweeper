@@ -89,6 +89,7 @@ export enum GameActionType {
   REVEAL_CELL = "REVEAL_CELL",
   TOGGLE_FLAG = "TOGGLE_FLAG",
   REVEAL_FLOOD = "REVEAL_FLOOD",
+  AUTO_OPEN = "AUTO_OPEN",
   GAME_WON = "GAME_WON",
   GAME_LOST = "GAME_LOST",
   RESET_GAME = "RESET_GAME",
@@ -121,6 +122,12 @@ export type GameAction =
     }
   | {
       type: GameActionType.REVEAL_FLOOD;
+      payload: {
+        cellId: string;
+      };
+    }
+  | {
+      type: GameActionType.AUTO_OPEN;
       payload: {
         cellId: string;
       };

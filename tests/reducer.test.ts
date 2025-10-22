@@ -765,6 +765,407 @@ describe("gameReducer", () => {
     });
   });
 
+  describe("AUTO_OPEN", () => {
+    it("should auto-open safe neighbors when flags equal adjacentMines", () => {
+      // Create a controlled 5x5 board
+      const board: Cell[] = [];
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const id = `${r}-${c}`;
+          // Place a mine at 1-1
+          const isMine = id === "1-1";
+          board.push({
+            id,
+            row: r,
+            col: c,
+            isMine,
+            isRevealed: false,
+            isFlagged: false,
+            adjacentMines: 0,
+          });
+        }
+      }
+
+      // Calculate adjacentMines for all cells
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const index = r * 5 + c;
+          const cell = board[index];
+          if (!cell.isMine) {
+            let count = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                if (dr === 0 && dc === 0) continue;
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < 5 && nc >= 0 && nc < 5) {
+                  const neighborIdx = nr * 5 + nc;
+                  if (board[neighborIdx].isMine) {
+                    count++;
+                  }
+                }
+              }
+            }
+            cell.adjacentMines = count;
+          }
+        }
+      }
+
+      // Reveal cell 0-0 (has adjacentMines=1, neighbor to mine)
+      board[0].isRevealed = true;
+
+      // Flag the mine at 1-1
+      board[6].isFlagged = true; // index 6 is 1-1
+
+      const playingState: GameState = {
+        ...initialState,
+        rows: 5,
+        cols: 5,
+        mines: 1,
+        board,
+        status: GameStatus.PLAYING,
+        startTime: Date.now(),
+        flagsPlaced: 1,
+      };
+
+      const action = {
+        type: GameActionType.AUTO_OPEN,
+        payload: { cellId: "0-0" },
+      } as const;
+
+      const newState = gameReducer(playingState, action);
+
+      // Should reveal safe neighbors (0-1, 1-0)
+      const cell_0_1 = newState.board.find((c) => c.id === "0-1");
+      const cell_1_0 = newState.board.find((c) => c.id === "1-0");
+
+      expect(cell_0_1?.isRevealed).toBe(true);
+      expect(cell_1_0?.isRevealed).toBe(true);
+
+      // Mine should still be flagged and not revealed
+      const mine = newState.board.find((c) => c.id === "1-1");
+      expect(mine?.isFlagged).toBe(true);
+      expect(mine?.isRevealed).toBe(false);
+
+      // Game should still be playing (not lost)
+      expect(newState.status).toBe(GameStatus.PLAYING);
+    });
+
+    it("should cause loss when wrong flags placed", () => {
+      // Create a controlled 5x5 board
+      const board: Cell[] = [];
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const id = `${r}-${c}`;
+          // Place a mine at 1-1
+          const isMine = id === "1-1";
+          board.push({
+            id,
+            row: r,
+            col: c,
+            isMine,
+            isRevealed: false,
+            isFlagged: false,
+            adjacentMines: 0,
+          });
+        }
+      }
+
+      // Calculate adjacentMines
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const index = r * 5 + c;
+          const cell = board[index];
+          if (!cell.isMine) {
+            let count = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                if (dr === 0 && dc === 0) continue;
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < 5 && nc >= 0 && nc < 5) {
+                  const neighborIdx = nr * 5 + nc;
+                  if (board[neighborIdx].isMine) {
+                    count++;
+                  }
+                }
+              }
+            }
+            cell.adjacentMines = count;
+          }
+        }
+      }
+
+      // Reveal cell 0-0 (has adjacentMines=1)
+      board[0].isRevealed = true;
+
+      // Flag WRONG cell (0-1 instead of 1-1)
+      board[1].isFlagged = true; // 0-1
+
+      const playingState: GameState = {
+        ...initialState,
+        rows: 5,
+        cols: 5,
+        mines: 1,
+        board,
+        status: GameStatus.PLAYING,
+        startTime: Date.now(),
+        flagsPlaced: 1,
+      };
+
+      const action = {
+        type: GameActionType.AUTO_OPEN,
+        payload: { cellId: "0-0" },
+      } as const;
+
+      const newState = gameReducer(playingState, action);
+
+      // Should hit the mine and lose
+      expect(newState.status).toBe(GameStatus.LOST);
+      expect(newState.endTime).not.toBeNull();
+
+      // The mine should be revealed
+      const mine = newState.board.find((c) => c.id === "1-1");
+      expect(mine?.isRevealed).toBe(true);
+    });
+
+    it("should not auto-open if flags count doesn't match adjacentMines", () => {
+      const board: Cell[] = [];
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          board.push({
+            id: `${r}-${c}`,
+            row: r,
+            col: c,
+            isMine: false,
+            isRevealed: r === 2 && c === 2,
+            isFlagged: false,
+            adjacentMines: 2, // Need 2 flags
+          });
+        }
+      }
+
+      // Only flag 1 neighbor
+      board[6].isFlagged = true;
+
+      const playingState: GameState = {
+        ...initialState,
+        rows: 5,
+        cols: 5,
+        mines: 2,
+        board,
+        status: GameStatus.PLAYING,
+        startTime: Date.now(),
+        flagsPlaced: 1,
+      };
+
+      const action = {
+        type: GameActionType.AUTO_OPEN,
+        payload: { cellId: "2-2" },
+      } as const;
+
+      const newState = gameReducer(playingState, action);
+
+      // Should not reveal any neighbors
+      expect(newState).toEqual(playingState);
+    });
+
+    it("should not auto-open unrevealed cells", () => {
+      const board: Cell[] = [];
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          board.push({
+            id: `${r}-${c}`,
+            row: r,
+            col: c,
+            isMine: false,
+            isRevealed: false, // Cell not revealed
+            isFlagged: false,
+            adjacentMines: 1,
+          });
+        }
+      }
+
+      const playingState: GameState = {
+        ...initialState,
+        rows: 5,
+        cols: 5,
+        mines: 1,
+        board,
+        status: GameStatus.PLAYING,
+        startTime: Date.now(),
+      };
+
+      const action = {
+        type: GameActionType.AUTO_OPEN,
+        payload: { cellId: "2-2" },
+      } as const;
+
+      const newState = gameReducer(playingState, action);
+
+      // Should not change state
+      expect(newState).toEqual(playingState);
+    });
+
+    it("should use flood fill for neighbors with adjacentMines=0", () => {
+      // Create a board with mines in two corners to prevent instant win
+      const board: Cell[] = [];
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const id = `${r}-${c}`;
+          const isMine = id === "0-0" || id === "4-4";
+          board.push({
+            id,
+            row: r,
+            col: c,
+            isMine,
+            isRevealed: false,
+            isFlagged: false,
+            adjacentMines: 0,
+          });
+        }
+      }
+
+      // Calculate adjacentMines
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const index = r * 5 + c;
+          const cell = board[index];
+          if (!cell.isMine) {
+            let count = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                if (dr === 0 && dc === 0) continue;
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < 5 && nc >= 0 && nc < 5) {
+                  const neighborIdx = nr * 5 + nc;
+                  if (board[neighborIdx].isMine) {
+                    count++;
+                  }
+                }
+              }
+            }
+            cell.adjacentMines = count;
+          }
+        }
+      }
+
+      // Reveal cell 0-1 (has adjacentMines=1)
+      board[1].isRevealed = true;
+
+      // Flag the mine at 0-0
+      board[0].isFlagged = true;
+
+      const playingState: GameState = {
+        ...initialState,
+        rows: 5,
+        cols: 5,
+        mines: 2,
+        board,
+        status: GameStatus.PLAYING,
+        startTime: Date.now(),
+        flagsPlaced: 1,
+      };
+
+      const action = {
+        type: GameActionType.AUTO_OPEN,
+        payload: { cellId: "0-1" },
+      } as const;
+
+      const newState = gameReducer(playingState, action);
+
+      // Should flood fill and reveal many cells
+      const revealedCount = newState.board.filter(
+        (c) => c.isRevealed && !c.isMine,
+      ).length;
+
+      expect(revealedCount).toBeGreaterThan(3);
+      // May or may not win depending on flood fill extent
+      expect([GameStatus.PLAYING, GameStatus.WON]).toContain(newState.status);
+    });
+
+    it("should check win condition after auto-open", () => {
+      // Create a tiny board where auto-open wins the game
+      const board: Cell[] = [];
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          const id = `${r}-${c}`;
+          const isMine = id === "2-2";
+          board.push({
+            id,
+            row: r,
+            col: c,
+            isMine,
+            isRevealed: false,
+            isFlagged: false,
+            adjacentMines: 0,
+          });
+        }
+      }
+
+      // Calculate adjacentMines
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          const index = r * 3 + c;
+          const cell = board[index];
+          if (!cell.isMine) {
+            let count = 0;
+            for (let dr = -1; dr <= 1; dr++) {
+              for (let dc = -1; dc <= 1; dc++) {
+                if (dr === 0 && dc === 0) continue;
+                const nr = r + dr;
+                const nc = c + dc;
+                if (nr >= 0 && nr < 3 && nc >= 0 && nc < 3) {
+                  const neighborIdx = nr * 3 + nc;
+                  if (board[neighborIdx].isMine) {
+                    count++;
+                  }
+                }
+              }
+            }
+            cell.adjacentMines = count;
+          }
+        }
+      }
+
+      // Reveal most cells except the last one (1-1)
+      for (let i = 0; i < board.length; i++) {
+        if (board[i].id !== "1-1" && board[i].id !== "2-2") {
+          board[i].isRevealed = true;
+        }
+      }
+
+      // Reveal cell 1-2 (neighbor to mine, adjacentMines=1)
+      board[5].isRevealed = true;
+
+      // Flag the mine
+      board[8].isFlagged = true;
+
+      const playingState: GameState = {
+        ...initialState,
+        rows: 3,
+        cols: 3,
+        mines: 1,
+        board,
+        status: GameStatus.PLAYING,
+        startTime: Date.now(),
+        flagsPlaced: 1,
+      };
+
+      const action = {
+        type: GameActionType.AUTO_OPEN,
+        payload: { cellId: "1-2" },
+      } as const;
+
+      const newState = gameReducer(playingState, action);
+
+      // Should reveal last cell and win
+      expect(newState.status).toBe(GameStatus.WON);
+      expect(newState.endTime).not.toBeNull();
+    });
+  });
+
   describe("GAME_LOST", () => {
     it("should reveal all mines and set status to LOST", () => {
       const board: Cell[] = [];
