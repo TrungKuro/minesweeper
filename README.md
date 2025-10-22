@@ -4,7 +4,7 @@
 
 ## 📦 Package
 
-### `[devDependencies]`
+### 🚩 `[devDependencies]`
 
 > Cài những gói chỉ cần khi develop.
 
@@ -51,7 +51,16 @@
 
 - Chỉ định điểm "import" file _CSS_ của _Tailwind_ (bắt buộc phải có khi dùng `V4+`) vào file cấu hình của _Prettier_.
 
-### `[dependencies]`
+**3️⃣ Testing:**
+
+- [`vitest`](https://www.npmjs.com/package/vitest)
+  - _Testing_ framework hiện đại, tương thích _Jest API_
+- [`@testing-library/react`](https://www.npmjs.com/package/@testing-library/react)
+  - _Utilities_ để test _React components_
+- [`@testing-library/jest-dom`](https://www.npmjs.com/package/@testing-library/jest-dom)
+  - Custom "matchers" cho _DOM testing_
+
+### 🚩 `[dependencies]`
 
 > Cài những gói cần để app chạy.
 
