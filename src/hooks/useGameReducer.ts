@@ -18,17 +18,35 @@ const createInitialState = (
   cols: number = 9,
   mines: number = 10,
   difficulty: Difficulty = Difficulty.BEGINNER,
-): GameState => ({
-  board: [],
-  rows,
-  cols,
-  mines,
-  status: GameStatus.IDLE,
-  flagsPlaced: 0,
-  startTime: null,
-  endTime: null,
-  difficulty,
-});
+): GameState => {
+  // Create empty board (no mines yet - mines will be placed on first click)
+  const board: Cell[] = [];
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      board.push({
+        id: `${r}-${c}`,
+        row: r,
+        col: c,
+        isMine: false,
+        isRevealed: false,
+        isFlagged: false,
+        adjacentMines: 0,
+      });
+    }
+  }
+
+  return {
+    board,
+    rows,
+    cols,
+    mines,
+    status: GameStatus.IDLE,
+    flagsPlaced: 0,
+    startTime: null,
+    endTime: null,
+    difficulty,
+  };
+};
 
 /**
  * Game reducer function

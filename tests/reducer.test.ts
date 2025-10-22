@@ -755,13 +755,18 @@ describe("gameReducer", () => {
       const newState = gameReducer(playingState, action);
 
       expect(newState.status).toBe(GameStatus.IDLE);
-      expect(newState.board).toEqual([]);
+      expect(newState.board.length).toBe(playingState.rows * playingState.cols);
       expect(newState.flagsPlaced).toBe(0);
       expect(newState.startTime).toBeNull();
       expect(newState.endTime).toBeNull();
       expect(newState.rows).toBe(playingState.rows);
       expect(newState.cols).toBe(playingState.cols);
       expect(newState.mines).toBe(playingState.mines);
+
+      // All cells should be unrevealed and have no mines (mines placed on first click)
+      expect(newState.board.every((c) => !c.isRevealed && !c.isMine)).toBe(
+        true,
+      );
     });
   });
 
