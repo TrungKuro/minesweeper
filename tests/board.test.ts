@@ -70,34 +70,6 @@ describe("generateBoard", () => {
     const recalculatedBoard = generateBoard(3, 3, 0);
     recalculatedBoard[4].isMine = true;
 
-    // All 8 neighbors of center should have adjacentMines = 1
-    const neighbors = [0, 1, 2, 3, 5, 6, 7, 8]; // All except center (4)
-
-    for (const idx of neighbors) {
-      const cell = recalculatedBoard[idx];
-      if (!cell.isMine) {
-        // Count adjacent mines manually
-        let count = 0;
-        const r = cell.row;
-        const c = cell.col;
-
-        for (let dr = -1; dr <= 1; dr++) {
-          for (let dc = -1; dc <= 1; dc++) {
-            if (dr === 0 && dc === 0) continue;
-            const nr = r + dr;
-            const nc = c + dc;
-            if (nr >= 0 && nr < 3 && nc >= 0 && nc < 3) {
-              const neighborIdx = nr * 3 + nc;
-              if (recalculatedBoard[neighborIdx].isMine) {
-                count++;
-              }
-            }
-          }
-        }
-        // This test verifies the logic, but we need a better test
-      }
-    }
-
     // Better test: verify adjacentMines calculation is correct for any board
     const testBoard = generateBoard(9, 9, 10);
     for (const cell of testBoard) {

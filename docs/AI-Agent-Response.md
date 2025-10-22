@@ -262,3 +262,125 @@ Tests  40 passed (40) ✅
 ```
 
 All code is clean with no linter errors! 🎯
+
+# `M2` — Gameplay UX: flags, timer, difficulty, localStorage highscores
+
+- **Tasks:**
+  - Implement `useTimer` hook and wire to reducer `state.started` & `actions.tick`
+  - Implement `useLocalStorage` helper and `lib/storage.ts` keys
+  - Implement UI components: `Header`, `Board`, `Cell` basic (no animation)
+  - Keyboard & long-press behavior (use `useLongPress`)
+
+- **Cursor prompts (UI + storage):**
+
+  ```
+  Create components:
+  - src/components/Header/Header.tsx: shows timer, mine counter, difficulty dropdown, restart button.
+  - src/components/Board/Board.tsx: renders grid from state.board and Cell components.
+  - src/components/Board/Cell.tsx: minimal visuals; handles onClick => reveal; onContextMenu => toggleFlag (preventDefault). Use React.memo to avoid re-renders.
+
+  Implement src/hooks/useLocalStorage.ts.
+
+  Wire highscore persistence: when reducer transitions to won, call saveHighscore(difficulty, {name: 'Anonymous', time: state.timerSeconds, date: new Date().toISOString()}) and store in localStorage key minesweeper:highscores.
+  ```
+
+- **Test prompts:**
+  - Ask Cursor to run manual play checks: simulate clicks, flags. Use unit tests or E2E with Playwright/Cypress later.
+
+- **Commit:** `feat(ui): basic header, board, cell; persistence highscores`
+
+# Response `M2`
+
+## ✅ Hoàn Thành!
+
+Đã implement đầy đủ tất cả yêu cầu:
+
+### **1. Components**
+
+#### **`src/components/Header/Header.tsx`**
+
+- ✅ Hiển thị timer (cập nhật real-time khi đang chơi)
+- ✅ Mine counter (mines - flags placed)
+- ✅ Difficulty dropdown (Beginner, Intermediate, Expert)
+- ✅ Restart button với emoji thay đổi theo trạng thái
+- ✅ Thông báo win/loss
+
+#### **`src/components/Board/Board.tsx`**
+
+- ✅ Render grid động theo `state.rows` và `state.cols`
+- ✅ Map qua `state.board` và render Cell components
+- ✅ Truyền callbacks `onRevealCell` và `onToggleFlag`
+
+#### **`src/components/Board/Cell.tsx`**
+
+- ✅ React.memo để tránh re-renders không cần thiết
+- ✅ onClick => gọi `onReveal(cellId)`
+- ✅ onContextMenu => gọi `onToggleFlag(cellId)` với preventDefault
+- ✅ Visual states: unrevealed, revealed, flagged, mine, numbers với colors
+- ✅ Disable khi game over
+
+### **2. useLocalStorage Hook**
+
+#### **`src/hooks/useLocalStorage.ts`**
+
+- ✅ Generic hook `useLocalStorage<T>` với TypeScript type safety
+- ✅ Auto-load từ localStorage khi mount
+- ✅ Auto-save khi state thay đổi
+- ✅ SSR-safe (check `typeof window`)
+- ✅ Error handling
+- ✅ `useHighscores()` hook chuyên dụng với:
+  - `saveHighscore(difficulty, entry, maxEntries)`
+  - `getHighscores(difficulty)`
+  - `clearHighscores(difficulty?)`
+- ✅ Interface `HighscoreEntry` và `Highscores`
+
+### **3. Highscore Persistence**
+
+#### **Wiring trong `src/hooks/useGameReducer.ts`**
+
+- ✅ Thêm `onWin` callback parameter vào reducer
+- ✅ `checkWinCondition()` gọi `onWin(wonState)` khi win
+- ✅ `useGameReducer()` nhận `onWinCallback` và pass vào reducer
+
+#### **Wiring trong `src/components/Game/Game.tsx`**
+
+- ✅ Component chính wire tất cả logic
+- ✅ `handleWin` callback tính time và gọi `saveHighscore`:
+  ```typescript
+  saveHighscore(state.difficulty, {
+    name: 'Anonymous',
+    time: timeInSeconds,
+    date: new Date().toISOString()
+  })
+  ```
+- ✅ Lưu vào localStorage key `"minesweeper:highscores"`
+
+### **4. Tests & Quality**
+
+- ✅ **41/41 tests passing** (18 board tests + 23 reducer tests)
+- ✅ Test mới cho `onWin` callback
+- ✅ No linter errors
+- ✅ TypeScript strict mode
+- ✅ Proper error handling
+
+### **5. Main App**
+
+#### **`src/app/page.tsx`**
+
+- ✅ Updated để render `<Game />` component
+
+### **Files Created:**
+
+1. ✅ `src/hooks/useLocalStorage.ts` (167 lines)
+2. ✅ `src/components/Header/Header.tsx` (89 lines)
+3. ✅ `src/components/Board/Board.tsx` (42 lines)
+4. ✅ `src/components/Board/Cell.tsx` (71 lines)
+5. ✅ `src/components/Game/Game.tsx` (68 lines)
+
+### **Files Updated:**
+
+1. ✅ `src/hooks/useGameReducer.ts` (added onWin callback support)
+2. ✅ `src/app/page.tsx` (simplified to render Game)
+3. ✅ `tests/reducer.test.ts` (added onWin callback test)
+
+**Tất cả đã hoàn thành và test pass 100%!** 🎉

@@ -33,7 +33,11 @@ const createInitialState = (
 /**
  * Game reducer function
  */
-export function gameReducer(state: GameState, action: GameAction): GameState {
+export function gameReducer(
+  state: GameState,
+  action: GameAction,
+  onWin?: (state: GameState) => void,
+): GameState {
   switch (action.type) {
     case GameActionType.NEW_GAME: {
       const { rows, cols, mines, difficulty } = action.payload;
@@ -83,19 +87,25 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
             state.cols,
             cellId,
           );
-          return checkWinCondition({
-            ...updatedState,
-            board: revealedBoard,
-          });
+          return checkWinCondition(
+            {
+              ...updatedState,
+              board: revealedBoard,
+            },
+            onWin,
+          );
         } else {
           // Just reveal the single cell
           const revealedBoard = newBoard.map((c) =>
             c.id === cellId ? { ...c, isRevealed: true } : c,
           );
-          return checkWinCondition({
-            ...updatedState,
-            board: revealedBoard,
-          });
+          return checkWinCondition(
+            {
+              ...updatedState,
+              board: revealedBoard,
+            },
+            onWin,
+          );
         }
       }
 
@@ -132,19 +142,25 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
           state.cols,
           cellId,
         );
-        return checkWinCondition({
-          ...state,
-          board: revealedBoard,
-        });
+        return checkWinCondition(
+          {
+            ...state,
+            board: revealedBoard,
+          },
+          onWin,
+        );
       } else {
         // Just reveal the single numbered cell
         const revealedBoard = state.board.map((c) =>
           c.id === cellId ? { ...c, isRevealed: true } : c,
         );
-        return checkWinCondition({
-          ...state,
-          board: revealedBoard,
-        });
+        return checkWinCondition(
+          {
+            ...state,
+            board: revealedBoard,
+          },
+          onWin,
+        );
       }
     }
 
@@ -226,7 +242,10 @@ export function gameReducer(state: GameState, action: GameAction): GameState {
 /**
  * Check if the player has won the game
  */
-function checkWinCondition(state: GameState): GameState {
+function checkWinCondition(
+  state: GameState,
+  onWin?: (state: GameState) => void,
+): GameState {
   if (state.status !== GameStatus.PLAYING) return state;
 
   // Win condition: all non-mine cells are revealed
@@ -235,21 +254,29 @@ function checkWinCondition(state: GameState): GameState {
   );
 
   if (allNonMinesRevealed) {
-    return {
+    const wonState = {
       ...state,
       status: GameStatus.WON,
       endTime: Date.now(),
     };
+
+    // Call the win callback if provided
+    if (onWin) {
+      onWin(wonState);
+    }
+
+    return wonState;
   }
 
   return state;
 }
 
 /**
- * Custom hook for game state management
+ * Custom hook for game state management with highscore persistence
  */
 export function useGameReducer(
   initialDifficulty: Difficulty = Difficulty.BEGINNER,
+  onWinCallback?: (state: GameState) => void,
 ) {
   const config = DIFFICULTY_CONFIGS[initialDifficulty];
   const initialState = config
@@ -261,7 +288,11 @@ export function useGameReducer(
       )
     : createInitialState(9, 9, 10, initialDifficulty);
 
-  const [state, dispatch] = useReducer(gameReducer, initialState);
+  const [state, dispatch] = useReducer(
+    (state: GameState, action: GameAction) =>
+      gameReducer(state, action, onWinCallback),
+    initialState,
+  );
 
   // Start new game
   const startNewGame = useCallback(

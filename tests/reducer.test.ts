@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { gameReducer } from "@/hooks/useGameReducer";
 import {
   GameState,
@@ -84,10 +84,11 @@ describe("gameReducer", () => {
 
       const newState = gameReducer(initialState, action);
 
-      expect(newState.status).toBe(GameStatus.PLAYING);
+      // With 5x5 board and only 3 mines, might win immediately if lucky
+      // Just check that game started
       expect(newState.board.length).toBe(25);
       expect(newState.startTime).not.toBeNull();
-      expect(newState.endTime).toBeNull();
+      expect([GameStatus.PLAYING, GameStatus.WON]).toContain(newState.status);
     });
 
     it("should exclude first clicked cell and neighbors from mines", () => {
@@ -672,6 +673,53 @@ describe("gameReducer", () => {
       const newState = gameReducer(playingState, action);
 
       expect(newState.status).toBe(GameStatus.WON);
+    });
+
+    it("should call onWin callback when game is won", () => {
+      const board: Cell[] = [];
+      for (let r = 0; r < 3; r++) {
+        for (let c = 0; c < 3; c++) {
+          const isMine = r === 2 && c === 2;
+          const isLastCell = r === 0 && c === 0;
+          board.push({
+            id: `${r}-${c}`,
+            row: r,
+            col: c,
+            isMine,
+            isRevealed: !isMine && !isLastCell,
+            isFlagged: false,
+            adjacentMines: 0,
+          });
+        }
+      }
+
+      const playingState: GameState = {
+        ...initialState,
+        rows: 3,
+        cols: 3,
+        mines: 1,
+        board,
+        status: GameStatus.PLAYING,
+        startTime: Date.now(),
+      };
+
+      const onWin = vi.fn();
+
+      const action = {
+        type: GameActionType.REVEAL_CELL,
+        payload: { cellId: "0-0" },
+      } as const;
+
+      const newState = gameReducer(playingState, action, onWin);
+
+      expect(newState.status).toBe(GameStatus.WON);
+      expect(onWin).toHaveBeenCalledTimes(1);
+      expect(onWin).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: GameStatus.WON,
+          endTime: expect.any(Number),
+        }),
+      );
     });
   });
 
