@@ -95,3 +95,13 @@ export function cn(...inputs: ClassValue[]) {
   - `clsx`: Xử lý conditional classes, merge arrays/objects
   - `twMerge`: Loại bỏ Tailwind classes bị xung đột
   - `cn`: Làm cả 2 việc trên trong 1 function
+
+3️⃣ **Animation:**
+
+- [`framer-motion`](https://www.npmjs.com/package/framer-motion)
+  - Thư viện _animation_ cho _React_
+
+4️⃣ **State Management:**
+
+- [`zustand`](https://www.npmjs.com/package/zustand)
+  - Thư viện _state management_ nhẹ và đơn giản ➡️ Thay thế `Redux/Context API`
