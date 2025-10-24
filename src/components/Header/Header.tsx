@@ -15,17 +15,11 @@ const Header: React.FC<HeaderProps> = ({
   onDifficultyChange,
   onRestart,
 }) => {
-  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [liveTimerSeconds, setLiveTimerSeconds] = useState(0);
 
-  // Timer logic
+  // Timer logic - only update state when game is actively playing
   useEffect(() => {
     if (state.status !== GameStatus.PLAYING) {
-      // Game not playing - show final time or 0
-      if (state.startTime && state.endTime) {
-        setTimerSeconds(Math.floor((state.endTime - state.startTime) / 1000));
-      } else if (state.status === GameStatus.IDLE) {
-        setTimerSeconds(0);
-      }
       return;
     }
 
@@ -33,12 +27,25 @@ const Header: React.FC<HeaderProps> = ({
     const interval = setInterval(() => {
       if (state.startTime) {
         const elapsed = Math.floor((Date.now() - state.startTime) / 1000);
-        setTimerSeconds(elapsed);
+        setLiveTimerSeconds(elapsed);
       }
     }, 100); // Update every 100ms for smooth display
 
     return () => clearInterval(interval);
-  }, [state.status, state.startTime, state.endTime]);
+  }, [state.status, state.startTime]);
+
+  // Derive timer value from state instead of storing in local state
+  const timerSeconds = (() => {
+    if (state.status === GameStatus.PLAYING && state.startTime) {
+      return liveTimerSeconds;
+    } else if (state.startTime && state.endTime) {
+      // Game finished - show final time
+      return Math.floor((state.endTime - state.startTime) / 1000);
+    } else {
+      // Game idle or no time recorded
+      return 0;
+    }
+  })();
 
   // Calculate remaining mines (total mines - flags placed)
   const remainingMines = state.mines - state.flagsPlaced;

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useCallback } from "react";
-import { Difficulty, DIFFICULTY_CONFIGS, GameState } from "@/types/game";
+import { Difficulty, GameState } from "@/types/game";
 import { useGameReducer } from "@/hooks/useGameReducer";
 import { useHighscores } from "@/hooks/useLocalStorage";
 import Header from "@/components/Header/Header";

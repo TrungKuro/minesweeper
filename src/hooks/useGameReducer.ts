@@ -1,4 +1,4 @@
-import { useReducer, useEffect, useCallback } from "react";
+import { useReducer, useCallback } from "react";
 import {
   GameState,
   GameAction,
@@ -269,7 +269,6 @@ export function gameReducer(
       // Reveal all unflagged neighbors
       let newBoard = state.board.map((c) => ({ ...c }));
       let hitMine = false;
-      let mineId = "";
 
       for (const neighborId of neighbors) {
         const neighborIndex = newBoard.findIndex((c) => c.id === neighborId);
@@ -286,7 +285,6 @@ export function gameReducer(
         // Check if we hit a mine
         if (neighbor.isMine) {
           hitMine = true;
-          mineId = neighborId;
         } else if (neighbor.adjacentMines === 0) {
           // Use flood fill for cells with 0 adjacent mines
           newBoard = revealFlood(newBoard, state.rows, state.cols, neighborId);

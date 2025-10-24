@@ -106,6 +106,7 @@ test.describe("Minesweeper Game", () => {
     // All cells should be unrevealed again
     const revealedCells = page.locator(".cell-revealed");
     const count = await revealedCells.count();
+    expect(count).toBe(0); // After reset, no cells should be revealed
 
     // Timer should reset to 000
     const timer = page
