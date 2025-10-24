@@ -1,14 +1,18 @@
 # 💣 Minesweeper
 
-> ?! ... about project
-
-## 🤖 AI Agent
-
-> Đây là project thử nghiệm dùng AI Agent.
-
-### 📚 Course
-
-- [agentic_ai_crash_course](https://github.com/aishwaryanr/awesome-generative-ai-guide/tree/main/free_courses/agentic_ai_crash_course)
+> Đôi lời về dự án:
+>
+> - 🎮 **Minesweeper** — hay còn gọi là _"game đào mìn"_ — là trò chơi quen thuộc trên những máy tính chạy **Windows XP**, gắn liền với tuổi thơ của thế hệ 8x–9x.
+> - 🤖 Vì thế tôi muốn tự làm lại phiên bản _"game đào mìn"_ này. Đây cũng là project đầu tiên tôi thử nghiệm để **AI Agent tạo ra 100% code**.
+> - 👉🏻 Đầu tiên tôi đưa ý tưởng cho **ChatGPT**. Sau khi chọn được hướng phát triển từ gợi ý của AI, tôi yêu cầu AI cung cấp **các prompt theo từng bước (step-by-step)** để dùng với **AI Agent (claude-4.5-sonet)** trên **IDE Cursor**.
+>
+> ---
+>
+> About this project:
+>
+> - 🎮 **Minesweeper** — also known as the classic _“mine digging” game_ — was pre-installed on **Windows XP** and is deeply familiar to many people born in the late 80s and 90s.
+> - 🤖 I decided to recreate this game myself. This is also my first project in which I experimented with letting **an AI agent generate 100% of the code**.
+> - 👉🏻 First, I provide the idea to **ChatGPT**. After selecting a development direction from the AI's suggestions, I ask the AI to generate **step-by-step prompts** to feed into the **AI agent (claude-4.5-sonet)** on the **Cursor IDE**.
 
 ## 🎯 TL;DR
 
@@ -20,7 +24,7 @@
 - **47 unit tests** + E2E tests with Playwright
 - **State machine architecture** with reducer pattern
 
-[Play Demo](#) • [View Tests](#testing)
+[Play Demo](https://minesweeper-aiagent-trung.vercel.app) • [View Tests](https://github.com/TrungKuro/minesweeper/tree/main/tests)
 
 ## 🚀 Quick Start
 
@@ -33,7 +37,7 @@
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/TrungKuro/minesweeper.git
 cd minesweeper
 
 # Install dependencies
@@ -371,4 +375,4 @@ MIT
 
 ---
 
-Built with ❤️ by [Your Name]
+Built with ❤️ by TrungKuro (AI Agent)
