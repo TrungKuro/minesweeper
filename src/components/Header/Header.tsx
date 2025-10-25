@@ -65,56 +65,95 @@ const Header: React.FC<HeaderProps> = ({
   };
 
   return (
-    <div className="mb-4 flex flex-col gap-4 rounded-lg border-4 border-gray-400 bg-gray-200 p-4">
+    <div
+      className="mb-4 flex flex-col gap-4 bg-gray-300 p-4 dark:bg-gray-700"
+      style={{
+        border: "3px solid",
+        borderColor: "#ffffff #808080 #808080 #ffffff",
+        borderRadius: "2px",
+      }}
+    >
       {/* Top row: Timer, Restart, Mine Counter */}
       <div className="flex items-center justify-between gap-4">
         {/* Mine Counter */}
-        <div className="flex min-w-[80px] items-center justify-center rounded border-2 border-gray-500 bg-black px-3 py-2 font-mono text-2xl font-bold text-red-500">
+        <div
+          className="flex min-w-[80px] items-center justify-center bg-black px-3 py-2 font-mono text-2xl font-bold text-red-600"
+          style={{
+            border: "2px inset #808080",
+            borderRadius: "2px",
+          }}
+        >
           {remainingMines.toString().padStart(3, "0")}
         </div>
 
         {/* Restart Button */}
         <button
           onClick={onRestart}
-          className="rounded border-2 border-gray-400 bg-gray-300 px-4 py-2 text-3xl transition-transform hover:scale-110 active:scale-95"
+          className="bg-gray-300 px-4 py-2 text-3xl active:bg-gray-400 dark:bg-gray-600 dark:active:bg-gray-500"
+          style={{
+            border: "3px solid",
+            borderColor: "#ffffff #808080 #808080 #ffffff",
+            borderRadius: "2px",
+          }}
           aria-label="Restart game"
         >
           {getStatusEmoji()}
         </button>
 
         {/* Timer */}
-        <div className="flex min-w-[80px] items-center justify-center rounded border-2 border-gray-500 bg-black px-3 py-2 font-mono text-2xl font-bold text-red-500">
+        <div
+          className="flex min-w-[80px] items-center justify-center bg-black px-3 py-2 font-mono text-2xl font-bold text-red-600"
+          style={{
+            border: "2px inset #808080",
+            borderRadius: "2px",
+          }}
+        >
           {timerSeconds.toString().padStart(3, "0")}
         </div>
       </div>
 
       {/* Bottom row: Difficulty selector */}
       <div className="flex items-center justify-center gap-2">
-        <label htmlFor="difficulty" className="font-semibold text-gray-700">
+        <label
+          htmlFor="difficulty"
+          className="font-bold text-gray-800 dark:text-gray-200"
+          style={{ fontFamily: "Arial, sans-serif" }}
+        >
           Difficulty:
         </label>
         <select
           id="difficulty"
           value={state.difficulty}
           onChange={(e) => onDifficultyChange(e.target.value as Difficulty)}
-          className="rounded border-2 border-gray-400 bg-white px-3 py-1 font-semibold transition-colors hover:bg-gray-50 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          className="bg-white px-3 py-1 font-semibold text-gray-900 focus:outline-none dark:bg-gray-800 dark:text-gray-100"
+          style={{
+            border: "2px solid #808080",
+            borderRadius: "2px",
+            fontFamily: "Arial, sans-serif",
+          }}
         >
-          <option value={Difficulty.BEGINNER}>Beginner (9x9, 10 mines)</option>
+          <option value={Difficulty.BEGINNER}>Beginner (9×9, 10 mines)</option>
           <option value={Difficulty.INTERMEDIATE}>
-            Intermediate (16x16, 40 mines)
+            Intermediate (16×16, 40 mines)
           </option>
-          <option value={Difficulty.EXPERT}>Expert (16x30, 99 mines)</option>
+          <option value={Difficulty.EXPERT}>Expert (16×30, 99 mines)</option>
         </select>
       </div>
 
       {/* Status message */}
       {state.status === GameStatus.WON && (
-        <div className="text-center text-lg font-bold text-green-600">
+        <div
+          className="text-center text-lg font-bold text-green-700 dark:text-green-400"
+          style={{ fontFamily: "Arial, sans-serif" }}
+        >
           🎉 You won in {timerSeconds} seconds! 🎉
         </div>
       )}
       {state.status === GameStatus.LOST && (
-        <div className="text-center text-lg font-bold text-red-600">
+        <div
+          className="text-center text-lg font-bold text-red-700 dark:text-red-400"
+          style={{ fontFamily: "Arial, sans-serif" }}
+        >
           💥 Game Over! Try again! 💥
         </div>
       )}

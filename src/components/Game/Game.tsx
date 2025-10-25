@@ -42,9 +42,14 @@ const Game: React.FC = () => {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-linear-to-br from-blue-100 to-purple-100 p-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-200 p-8 dark:bg-gray-900">
       <div className="flex flex-col items-center">
-        <h1 className="mb-6 text-4xl font-bold text-gray-800">Minesweeper</h1>
+        <h1
+          className="mb-6 text-4xl font-bold text-gray-800 dark:text-gray-200"
+          style={{ fontFamily: "Arial, sans-serif" }}
+        >
+          💣 Minesweeper
+        </h1>
 
         <Header
           state={state}
@@ -58,8 +63,11 @@ const Game: React.FC = () => {
           onToggleFlag={toggleFlag}
         />
 
-        <div className="mt-4 text-center text-sm text-gray-600">
-          <p>Left click to reveal • Right click to flag</p>
+        <div
+          className="mt-4 text-center text-sm font-semibold text-gray-700 dark:text-gray-300"
+          style={{ fontFamily: "Arial, sans-serif" }}
+        >
+          <p>🖱️ Left click to reveal • Right click to flag 🚩</p>
         </div>
       </div>
     </div>

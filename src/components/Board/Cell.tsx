@@ -45,18 +45,18 @@ const Cell = React.memo(({ cell, onReveal, onFlag, gameOver }: CellProps) => {
   const getCellColor = () => {
     if (!cell.isRevealed) return "";
 
-    if (cell.isMine) return "text-red-600 dark:text-red-400";
+    if (cell.isMine) return "text-black dark:text-white";
 
-    // Color coding for numbers with enhanced contrast
+    // Classic Minesweeper number colors (matching original Windows XP)
     const colorMap: Record<number, string> = {
-      1: "text-blue-600 dark:text-blue-400",
-      2: "text-green-600 dark:text-green-400",
-      3: "text-red-600 dark:text-red-400",
-      4: "text-purple-600 dark:text-purple-400",
-      5: "text-yellow-600 dark:text-yellow-400",
-      6: "text-cyan-600 dark:text-cyan-400",
-      7: "text-black dark:text-white",
-      8: "text-gray-700 dark:text-gray-300",
+      1: "text-blue-700", // Blue
+      2: "text-green-700", // Green
+      3: "text-red-600", // Red
+      4: "text-blue-900", // Dark Blue
+      5: "text-red-900", // Maroon
+      6: "text-cyan-600", // Cyan
+      7: "text-black dark:text-white", // Black
+      8: "text-gray-600", // Gray
     };
 
     return colorMap[cell.adjacentMines] || "";
@@ -78,47 +78,32 @@ const Cell = React.memo(({ cell, onReveal, onFlag, gameOver }: CellProps) => {
       onContextMenu={handleContextMenu}
       disabled={gameOver && !cell.isRevealed}
       className={cn(
-        "cell-glossy relative flex h-10 w-10 items-center justify-center text-sm font-bold",
-        "rounded-lg border border-white/20",
-        "focus:ring-2 focus:ring-purple-400 focus:ring-offset-2 focus:outline-none",
+        "relative flex h-10 w-10 items-center justify-center font-bold",
+        "text-lg leading-none",
+        "focus:ring-2 focus:ring-blue-500 focus:outline-none",
         getCellBgClass(),
         getCellColor(),
       )}
-      // Reveal animation: scale from 0.95 to 1 with fade-in
+      style={{
+        borderRadius: "var(--cell-border-radius)",
+        fontFamily: "Arial, sans-serif",
+      }}
+      // Minimal animation for retro feel
       initial={false}
-      animate={
-        cell.isRevealed
-          ? {
-              scale: 1,
-              opacity: 1,
-              rotateX: 0,
-            }
-          : {
-              scale: 1,
-              opacity: 1,
-              rotateX: 0,
-            }
-      }
-      whileHover={
-        !cell.isRevealed && !gameOver
-          ? {
-              scale: 1.05,
-              transition: { duration: 0.2 },
-            }
-          : {}
-      }
+      animate={{
+        scale: 1,
+        opacity: 1,
+      }}
       whileTap={
         !cell.isRevealed && !gameOver
           ? {
-              scale: 0.95,
-              transition: { duration: 0.1 },
+              scale: 0.98,
+              transition: { duration: 0.05 },
             }
           : {}
       }
       transition={{
-        type: "spring",
-        stiffness: 300,
-        damping: 20,
+        duration: 0.1,
       }}
     >
       <AnimatePresence mode="wait">

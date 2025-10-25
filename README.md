@@ -16,7 +16,8 @@
 
 ## 🎯 TL;DR
 
-- **Modern Minesweeper** with beautiful animations and glossy UI
+- **Classic Retro Minesweeper** with authentic Windows XP style
+- **Retro 3D bevel effects** matching the original game aesthetics
 - **3 difficulty levels** (Beginner, Intermediate, Expert)
 - **Auto-open/Chording** - click revealed numbers to auto-reveal neighbors
 - **Highscore tracking** with localStorage persistence
@@ -197,33 +198,59 @@ saveHighscore(difficulty, {
 
 ## 🎨 Design System
 
-### Theme Tokens
+### Retro Windows XP Style
 
-Custom CSS variables for consistent theming (see `src/app/globals.css`):
+Authentic recreation of the classic Minesweeper aesthetic:
+
+**Color Palette:**
+
+- Silver gray backgrounds (`#c0c0c0`)
+- Classic 3D bevel borders (white highlight, gray shadow)
+- Traditional number colors matching Windows XP:
+  - 1: Blue (#1e40af)
+  - 2: Green (#15803d)
+  - 3: Red (#dc2626)
+  - 4: Dark Blue (#1e3a8a)
+  - 5: Maroon (#7f1d1d)
+  - 6: Cyan (#0891b2)
+  - 7: Black (#000000)
+  - 8: Gray (#4b5563)
+
+**3D Bevel Effect:**
 
 ```css
---cell-unrevealed-bg: linear-gradient(...)
-  --cell-revealed-bg: linear-gradient(...) --cell-mine-bg: linear-gradient(...)
-  --cell-flagged-bg: linear-gradient(...);
+/* Unrevealed cells with raised 3D effect */
+border-top: 3px solid #ffffff; /* Light highlight */
+border-left: 3px solid #ffffff;
+border-right: 3px solid #808080; /* Dark shadow */
+border-bottom: 3px solid #808080;
+
+/* Revealed cells with flat inset */
+border: 1px solid #7b7b7b;
 ```
+
+**Typography:**
+
+- Arial font family (matching classic Windows)
+- Bold numbers for better visibility
+- Red LED-style display for timer and mine counter
 
 ### Animations
 
-All cells feature smooth Framer Motion animations:
+Minimal animations to preserve retro feel:
 
-- **Reveal:** Scale 0.95 → 1.0 with fade-in
-- **Flag toggle:** 3D flip animation (rotateY)
-- **Hover:** Subtle scale up (1.05)
-- **Tap:** Scale down (0.95)
+- **Tap:** Subtle scale down (0.98) for tactile feedback
+- **Flag toggle:** Smooth 3D flip animation
+- **Reveal:** Quick fade-in transition
+- No hover scale effects (maintaining classic behavior)
 
-### Glossy Cards
+### Dark Mode Support
 
-Modern glossy card effect with:
+Retro style preserved in dark mode with adjusted colors:
 
-- Gradient backgrounds
-- Highlight overlay (top 50%)
-- Sophisticated shadows
-- Dark mode support
+- Darker silver gray (`#404040`)
+- Adjusted bevel colors for contrast
+- Same number color scheme for consistency
 
 ## 🧪 Testing
 
@@ -347,8 +374,21 @@ GitHub Actions workflow runs on every push:
 1. **Memoized Components:** `React.memo` on Cell prevents 256+ re-renders per click
 2. **Callback Stability:** `useCallback` prevents prop changes triggering re-renders
 3. **Flat Data Structure:** O(1) cell lookup vs O(n) array search
-4. **CSS Variables:** Better performance than inline styles
-5. **Framer Motion Layout:** Disabled on parent, only on children
+4. **CSS Variables:** Better performance than inline styles for theming
+5. **Minimal Animations:** Reduced animation complexity for smoother gameplay
+6. **Retro-first Design:** Native CSS borders instead of complex gradients
+
+### Recent Updates (October 2025)
+
+**✅ Retro UI Overhaul**
+
+- Implemented authentic Windows XP Minesweeper aesthetic
+- Classic 3D bevel borders with light/shadow effects
+- Traditional color scheme for numbers (1=Blue, 2=Green, 3=Red, etc.)
+- LED-style red display for timer and mine counter
+- Arial font matching original Windows design
+- Minimal animations to preserve classic feel
+- Fixed React effect warning in Header component
 
 ### Future Improvements
 
@@ -356,11 +396,12 @@ GitHub Actions workflow runs on every push:
 - [ ] Online leaderboard
 - [ ] Multiplayer mode
 - [ ] Mobile touch gestures (long-press for flag)
-- [ ] Sound effects
+- [ ] Sound effects (retro Windows XP sounds)
 - [ ] Undo/redo functionality
 - [ ] Hint system
 - [ ] Statistics dashboard
 - [ ] Accessibility improvements (keyboard navigation)
+- [ ] Question mark mode (? flag)
 
 ## 📝 License
 

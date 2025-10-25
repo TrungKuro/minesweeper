@@ -16,9 +16,16 @@ const Board: React.FC<BoardProps> = ({ state, onRevealCell, onToggleFlag }) => {
     state.status === GameStatus.WON || state.status === GameStatus.LOST;
 
   return (
-    <div className="inline-block rounded-xl border-4 border-gray-400/50 bg-linear-to-br from-gray-100 to-gray-200 p-3 shadow-2xl dark:border-gray-600/50 dark:from-gray-800 dark:to-gray-900">
+    <div
+      className="inline-block bg-gray-300 p-3 dark:bg-gray-700"
+      style={{
+        border: "3px solid",
+        borderColor: "#ffffff #808080 #808080 #ffffff",
+        borderRadius: "2px",
+      }}
+    >
       <div
-        className="grid gap-1"
+        className="grid gap-0"
         style={{
           gridTemplateColumns: `repeat(${state.cols}, minmax(0, 1fr))`,
         }}
@@ -34,7 +41,7 @@ const Board: React.FC<BoardProps> = ({ state, onRevealCell, onToggleFlag }) => {
         ))}
       </div>
       {state.board.length === 0 && (
-        <div className="flex h-64 w-64 items-center justify-center text-gray-500">
+        <div className="flex h-64 w-64 items-center justify-center text-gray-600 dark:text-gray-300">
           Click to start
         </div>
       )}

@@ -4,25 +4,25 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Minesweeper Cell Theme */
-  --cell-unrevealed-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --cell-unrevealed-shadow:
-    0 4px 6px -1px rgba(102, 126, 234, 0.3),
-    0 2px 4px -1px rgba(102, 126, 234, 0.2);
-  --cell-unrevealed-hover: linear-gradient(135deg, #7b93ee 0%, #8b5cb2 100%);
+  /* Retro Windows XP Minesweeper Theme */
+  --cell-unrevealed-bg: #c0c0c0;
+  --cell-unrevealed-border-light: #ffffff;
+  --cell-unrevealed-border-dark: #808080;
+  --cell-unrevealed-hover: #d0d0d0;
 
-  --cell-revealed-bg: linear-gradient(145deg, #f8f9fa 0%, #e9ecef 100%);
-  --cell-revealed-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+  --cell-revealed-bg: #bdbdbd;
+  --cell-revealed-border: #7b7b7b;
 
-  --cell-mine-bg: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-  --cell-flagged-bg: linear-gradient(135deg, #ffd93d 0%, #ffb800 100%);
+  --cell-mine-bg: #ff0000;
+  --cell-flagged-bg: #c0c0c0;
 
-  --cell-border-radius: 8px;
-  --cell-glossy-highlight: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.3) 0%,
-    rgba(255, 255, 255, 0) 50%
-  );
+  --cell-border-radius: 2px;
+
+  /* Retro 3D Bevel Effect */
+  --bevel-light: #ffffff;
+  --bevel-mid-light: #dfdfdf;
+  --bevel-mid-dark: #808080;
+  --bevel-dark: #000000;
 }
 
 @theme inline {
@@ -37,14 +37,17 @@
     --background: #0a0a0a;
     --foreground: #ededed;
 
-    --cell-unrevealed-bg: linear-gradient(135deg, #4c6ef5 0%, #5f3dc4 100%);
-    --cell-unrevealed-shadow:
-      0 4px 6px -1px rgba(76, 110, 245, 0.4),
-      0 2px 4px -1px rgba(76, 110, 245, 0.3);
-    --cell-unrevealed-hover: linear-gradient(135deg, #5c7cfa 0%, #7048e8 100%);
+    /* Keep retro style even in dark mode */
+    --cell-unrevealed-bg: #404040;
+    --cell-unrevealed-border-light: #808080;
+    --cell-unrevealed-border-dark: #202020;
+    --cell-unrevealed-hover: #505050;
 
-    --cell-revealed-bg: linear-gradient(145deg, #2c2e33 0%, #25262b 100%);
-    --cell-revealed-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    --cell-revealed-bg: #3a3a3a;
+    --cell-revealed-border: #1a1a1a;
+
+    --cell-mine-bg: #cc0000;
+    --cell-flagged-bg: #404040;
   }
 }
 
@@ -54,49 +57,43 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Glossy Cell Styles */
-.cell-glossy {
-  position: relative;
-  overflow: hidden;
-}
-
-.cell-glossy::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  background: var(--cell-glossy-highlight);
-  pointer-events: none;
-  border-radius: var(--cell-border-radius) var(--cell-border-radius) 0 0;
-}
-
+/* Retro Windows XP Style 3D Bevel Effect */
 .cell-unrevealed {
   background: var(--cell-unrevealed-bg);
-  box-shadow: var(--cell-unrevealed-shadow);
-  transition: all 0.2s ease;
+  border-top: 3px solid var(--cell-unrevealed-border-light);
+  border-left: 3px solid var(--cell-unrevealed-border-light);
+  border-right: 3px solid var(--cell-unrevealed-border-dark);
+  border-bottom: 3px solid var(--cell-unrevealed-border-dark);
+  transition: all 0.1s ease;
 }
 
 .cell-unrevealed:hover {
   background: var(--cell-unrevealed-hover);
-  transform: translateY(-2px);
-  box-shadow:
-    0 6px 8px -2px rgba(102, 126, 234, 0.4),
-    0 4px 6px -1px rgba(102, 126, 234, 0.3);
+  border-top: 3px solid var(--bevel-light);
+  border-left: 3px solid var(--bevel-light);
+}
+
+.cell-unrevealed:active {
+  border-top: 1px solid var(--cell-unrevealed-border-dark);
+  border-left: 1px solid var(--cell-unrevealed-border-dark);
+  border-right: 1px solid var(--cell-unrevealed-border-light);
+  border-bottom: 1px solid var(--cell-unrevealed-border-light);
 }
 
 .cell-revealed {
   background: var(--cell-revealed-bg);
-  box-shadow: var(--cell-revealed-shadow);
+  border: 1px solid var(--cell-revealed-border);
 }
 
 .cell-mine {
   background: var(--cell-mine-bg);
-  box-shadow: 0 4px 6px -1px rgba(255, 107, 107, 0.4);
+  border: 1px solid var(--bevel-dark);
 }
 
 .cell-flagged {
   background: var(--cell-flagged-bg);
-  box-shadow: 0 4px 6px -1px rgba(255, 217, 61, 0.4);
+  border-top: 3px solid var(--cell-unrevealed-border-light);
+  border-left: 3px solid var(--cell-unrevealed-border-light);
+  border-right: 3px solid var(--cell-unrevealed-border-dark);
+  border-bottom: 3px solid var(--cell-unrevealed-border-dark);
 }
