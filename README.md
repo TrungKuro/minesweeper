@@ -14,6 +14,26 @@
 > - 🤖 I decided to recreate this game myself. This is also my first project in which I experimented with letting **an AI agent generate 100% of the code**.
 > - 👉🏻 First, I provide the idea to **ChatGPT**. After selecting a development direction from the AI's suggestions, I ask the AI to generate **step-by-step prompts** to feed into the **AI agent (claude-4.5-sonet)** on the **Cursor IDE**.
 
+## 🖼️ Image Demo
+
+- **3 Game Levels:**
+
+  | Beginner 9x9                                                        | Intermediate 16x16                                                          | Expert 16x30                                                    |
+  | ------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------- |
+  | <img src="public/level-beginner.webp" alt="beginner" width="100" /> | <img src="public/level-intermediate.webp" alt="intermediate" width="100" /> | <img src="public/level-expert.webp" alt="expert" width="100" /> |
+
+- **Try Play:**
+
+  |                                                         |                                                         |
+  | ------------------------------------------------------- | ------------------------------------------------------- |
+  | <img src="public/play-1.webp" alt="play" width="100" /> | <img src="public/play-2.webp" alt="play" width="100" /> |
+
+- **Win/Lose:**
+
+  |                                                         |                                                     |                                                         |
+  | ------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------- |
+  | <img src="public/lose-1.webp" alt="lose" width="100" /> | <img src="public/win.webp" alt="win" width="100" /> | <img src="public/lose-2.webp" alt="lose" width="100" /> |
+
 ## 🎯 TL;DR
 
 - **Classic Retro Minesweeper** with authentic Windows XP style
