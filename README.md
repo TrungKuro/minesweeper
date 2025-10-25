@@ -16,23 +16,50 @@
 
 ## 🖼️ Image Demo
 
-- **3 Game Levels:**
+`✅ 3 Game Levels`
 
-  | Beginner 9x9                                                        | Intermediate 16x16                                                          | Expert 16x30                                                    |
-  | ------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------- |
-  | <img src="public/level-beginner.webp" alt="beginner" width="100" /> | <img src="public/level-intermediate.webp" alt="intermediate" width="100" /> | <img src="public/level-expert.webp" alt="expert" width="100" /> |
+  <table>
+    <tr>
+      <td align="center" width="33%">
+        <img src="public/level-beginner.webp" alt="beginner" width="100%" />
+      </td>
+      <td align="center" width="33%">
+        <img src="public/level-intermediate.webp" alt="intermediate" width="100%" />
+      </td>
+      <td align="center" width="33%">
+        <img src="public/level-expert.webp" alt="expert" width="100%" />
+      </td>
+    </tr>
+  </table>
 
-- **Try Play:**
+`✅ Try Play`
 
-  |                                                         |                                                         |
-  | ------------------------------------------------------- | ------------------------------------------------------- |
-  | <img src="public/play-1.webp" alt="play" width="100" /> | <img src="public/play-2.webp" alt="play" width="100" /> |
+  <table>
+    <tr>
+      <td align="center" width="50%">
+        <img src="public/play-1.webp" alt="play" width="100%" />
+      </td>
+      <td align="center" width="50%">
+        <img src="public/play-2.webp" alt="play" width="100%" />
+      </td>
+    </tr>
+  </table>
 
-- **Win/Lose:**
+`✅ Win/Lose`
 
-  |                                                         |                                                     |                                                         |
-  | ------------------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------- |
-  | <img src="public/lose-1.webp" alt="lose" width="100" /> | <img src="public/win.webp" alt="win" width="100" /> | <img src="public/lose-2.webp" alt="lose" width="100" /> |
+  <table>
+    <tr>
+      <td align="center" width="33%">
+        <img src="public/lose-1.webp" alt="lose" width="100%" />
+      </td>
+      <td align="center" width="33%">
+        <img src="public/win.webp" alt="win" width="100%" />
+      </td>
+      <td align="center" width="33%">
+        <img src="public/lose-2.webp" alt="lose" width="100%" />
+      </td>
+    </tr>
+  </table>
 
 ## 🎯 TL;DR
 
